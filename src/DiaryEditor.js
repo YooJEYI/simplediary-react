@@ -2,9 +2,12 @@
 const DiaryEditor 요구사항
 1. 작성자, 본문, 감정 점수 입력부분 기능
 */
-import React, {useState} from "react";
+import React, {useState, useRef } from "react";
 
-const DiaryEditor = () => {
+const DiaryEditor = ({onCreate}) => {
+
+    const authorInput = useRef();
+    const contentInput = useRef();
 
     const [state, setState] = useState({
         author : "",
@@ -20,19 +23,30 @@ const DiaryEditor = () => {
     }
 
     const handleSubmit = () => {
-        console.log(state);
+        if(state.author.length < 1){
+            // focus
+            authorInput.current.focus();
+            return;
+        }
+        if(state.content.length < 5){
+            // focus
+            contentInput.current.focus();
+            return;
+        }
+
+        onCreate(state.author, state.content, state.emotion);
         alert("저장성공!");
-    }
+    };
 
     return (
         <div className="DiaryEditor">
             <h2>오늘의 일기</h2>
             <div>
-                <input name="author" placeholder="작성자를 입력하세요." value={state.author} 
+                <input ref={authorInput}  name="author" placeholder="작성자를 입력하세요." value={state.author}
                     onChange={handleChangState}/>
             </div>
             <div>
-                <textarea name="content" placeholder="내용을 입력하세요." value={state.content} 
+                <textarea ref={contentInput} name="content" placeholder="내용을 입력하세요." value={state.content}
                 onChange={handleChangState} />  
             </div>      
             <div>
@@ -46,11 +60,10 @@ const DiaryEditor = () => {
                 </select>    
             </div>   
             <div>
-               <button onClick={handleSubmit}>일기 저장하기</button> 
+                <button onClick={handleSubmit}>일기 저장하기</button>
             </div> 
         </div>
     );
 }
-
 
 export default DiaryEditor;
